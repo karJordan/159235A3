@@ -1,4 +1,4 @@
-package nz.ac.massey.a3;
+package nz.ac.massey.a3.cg235;
 
 /*
     Class to represent the view plane for the virtual camera. Here the view plane is

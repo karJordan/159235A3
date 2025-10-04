@@ -1,4 +1,4 @@
-package nz.ac.massey.a3;
+package nz.ac.massey.a3.cg235;
 
 /*
     Class to represent a "z-buffer" for dealing with the visibility issue.

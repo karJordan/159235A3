@@ -1,4 +1,4 @@
-package nz.ac.massey.a3;
+package nz.ac.massey.a3.cg235;
 
 /*
     This class handles the reflective properties of the surface.

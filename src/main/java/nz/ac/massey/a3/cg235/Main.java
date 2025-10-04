@@ -1,7 +1,7 @@
 /*
 Start up package for 159.235 Assignment 3 (Semester 2, 2022)
  */
-package nz.ac.massey.a3;
+package nz.ac.massey.a3.cg235;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

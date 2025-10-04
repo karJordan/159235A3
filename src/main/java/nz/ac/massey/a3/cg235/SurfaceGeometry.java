@@ -1,4 +1,4 @@
-package nz.ac.massey.a3;
+package nz.ac.massey.a3.cg235;
 
 /*
     Deal with Ray intersection geometry for various surface types

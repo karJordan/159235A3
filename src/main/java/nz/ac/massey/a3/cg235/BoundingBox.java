@@ -1,4 +1,4 @@
-package nz.ac.massey.a3;
+package nz.ac.massey.a3.cg235;
 
 /*
     Use this to represent a two dimensional sub raster for an image.
