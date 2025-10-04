@@ -1,4 +1,4 @@
-package nz.ac.massey.a3.computergraphics159235;
+package nz.ac.massey.a3.cg235;
 
 public class Main {
     static void main() {
