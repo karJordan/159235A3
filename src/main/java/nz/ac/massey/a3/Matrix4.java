@@ -1,7 +1,7 @@
 /*
     Class to represent a 4-D matrix for transformations working in homogeneous coordinates.
  */
-package nz.ac.massey.a3.cg235;
+package nz.ac.massey.a3;
 
 public class Matrix4 {
 

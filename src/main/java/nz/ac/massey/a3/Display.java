@@ -1,4 +1,4 @@
-package nz.ac.massey.a3.cg235;
+package nz.ac.massey.a3;
 
 /*
     Class to make it easy to display an image on a JPanel. Also includes a static
