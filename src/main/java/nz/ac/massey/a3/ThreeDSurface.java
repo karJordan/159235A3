@@ -78,9 +78,9 @@ public class ThreeDSurface {
 
         if (hit.isHit) {
             Point4 pSurfaceW = placement.toWorld(hit.pSurface);
-            Point4 vNormalW  = placement.toWorld(hit.vNormal);
-            Point4 vLightW   = pLightW.minus(pSurfaceW);
-            Point4 vViewW    = rayW.pOrigin.minus(pSurfaceW);
+            Point4 vNormalW  = placement.toWorld(hit.vNormal); //w=0 so translation ignored
+            Point4 vLightW   = pLightW.minus(pSurfaceW); //L = light - point
+            Point4 vViewW    = rayW.pOrigin.minus(pSurfaceW); //V = eye - point
 
             // Shadow form factor
             //double ff = FEEL_SHADOWS ? Shadows.feel(surfaces, pSurfaceW, pLightW) : 1.0;
@@ -88,9 +88,13 @@ public class ThreeDSurface {
             // Shading factor
             //double fShade = SHADING_ON ? material.calculate(vNormalW, vLightW, vViewW, ff) : 1.0;
 
-            double fShade = 1.0;
+            //double fShade = 1.0;
+
+            double ff = 1.0; // or your Shadows.feel(...) later
+            double fShade = material.calculate(vNormalW, vLightW, vViewW, ff);
             Color c1 = surfaceColour.pickColour(hit.u, hit.v);
             sr.colour = rescaleColour(c1, fShade);
+
             sr.pSurface = placement.toWorld(hit.pSurface);
             //System.out.println(fShade + " " + sr.isShaded + " " + sr.pSurface);
         }

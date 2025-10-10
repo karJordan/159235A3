@@ -40,7 +40,8 @@ public class Main {
     public static void main(String[] args) {
 
         // Position of light source in world coordinates
-        Point4 pLightW = Point4.createPoint(50, 50, 100);
+        //Point4 pLightW = Point4.createPoint(50, 50, 100);
+        Point4 pLightW = Point4.createPoint(0, -40, 100);
 
         // Get a camera with field of view 15 degrees in y
         double fovy = Math.toRadians(15);
