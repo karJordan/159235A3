@@ -31,7 +31,7 @@ public class Main {
         return new ThreeDSurface(
                 new Square(),
                 new Material(0.0, 0.5, 10),
-                new UniformColour(Color.BLUE),
+                new UniformColour(Color.GRAY),
                 Placement.placeModel(pD, pA, pS)
         );
     }
@@ -49,52 +49,58 @@ public class Main {
         Camera camera = Camera.standardCamera(fovy, npixx, npixy);
 
         // Position and orientation of the camera in the world scene
-        Point4 pCam  = Point4.createPoint(100, 100, 40);
+        Point4 pCam  = Point4.createPoint(0,-80, 20);
         Point4 pTarg = Point4.createPoint(0, 0, 0);
-        Point4 vUp   = Point4.createVector(0, -1, 0);
+        Point4 vUp   = Point4.createVector(0, 0, -1);
         camera.rePoint(pCam, pTarg, vUp);
 
         // Get a scene graph that manages the list of surfaces to be rendered
         SceneGraph scene = new SceneGraph();
 
-        /* Add a planar square surface at the origin
-        Point4 pD = Point4.createPoint(0,0,0);
-        Point4 pA = Point4.createPoint(0,0,0);
-        Point4 pS = Point4.createPoint(1,1,1);
-        scene.add(testSurface(pD, pA, pS));
-        */
+
+        //Add a planar square surface at the origin
+        //Point4 pD = Point4.createPoint(0,0,0);
+        //Point4 pA = Point4.createPoint(0,0,0);
+        //Point4 pS = Point4.createPoint(10,10,1);
+       // scene.add(testSurface(pD, pA, pS));
+
+
         // add this:
         ThreeDSurface sphere = new ThreeDSurface(
                 new Sphere(3.0),
                 new Material(0.0, 0.5, 10),
                 new UniformColour(Color.BLUE),
                 Placement.placeModel(
-                        Point4.createPoint(0, 0, 0),     // position
+                        Point4.createPoint(0, 0, 3),     // position
                         Point4.createPoint(0, 0, 0),     // rotation (radians)
                         Point4.createPoint(1, 1, 1)      // scale
                 )
         );
         scene.add(sphere);
 
+
+
         // Main.java (after you add the sphere)
         ThreeDSurface ground = new ThreeDSurface(
                 new Square(),                         // z=0 in local coords
                 new Material(0.0, 0.5, 10),
-                new UniformColour(Color.LIGHT_GRAY),
+                new UniformColour(Color.GREEN),
                 Placement.placeModel(
                         Point4.createPoint(0, -3, 0),     // move to y = -3
-                        Point4.createPoint(Math.toRadians(90), 0, 0), // rotate so normal points -Y
+                        Point4.createPoint(Math.toRadians(0), 0, 0), // rotate so normal points -Y
                         Point4.createPoint(50, 50, 1)     // make it big
                 )
         );
 
         scene.add(ground);
 
+
+
         // Render the scene at the given camera and light source
         scene.render(camera, pLightW);
 
         // Uncomment if you want to verify the camera target point in the scene
-        //putAxes(camera.image);
+        putAxes(camera.image);
 
         // Display image in a JPanel/JFrame
         Display.show(camera.image);
