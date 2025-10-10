@@ -70,7 +70,7 @@ public class Camera {
     public static Camera standardCamera(double fovy, int npixx, int npixy) {
         Camera camera = new Camera();
         camera.image = new BufferedImage(npixx, npixy, BufferedImage.TYPE_INT_ARGB);
-        camera.viewPlane = new ViewPlane(fovy, npixx, npixx);
+        camera.viewPlane = new ViewPlane(fovy, npixx, npixy);
         camera.zBuffer = new ZBuffer(npixx, npixy);
         return camera;
     }
