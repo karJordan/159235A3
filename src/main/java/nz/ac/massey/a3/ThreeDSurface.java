@@ -78,6 +78,46 @@ public class ThreeDSurface {
 
         if (hit.isHit) {
             Point4 pSurfaceW = placement.toWorld(hit.pSurface);
+            Point4 vNormalW  = placement.toWorld(hit.vNormal);     // w=0 so no translation
+            Point4 vLightW   = pLightW.minus(pSurfaceW);           // L = light - point
+            Point4 vViewW    = rayW.pOrigin.minus(pSurfaceW);      // V = eye - point
+
+            // --- inline hard shadow (no helper class) ---
+            final double EPS = 1e-3;
+
+            // vector from hit point to light (world)
+            Point4 L = pLightW.minus(pSurfaceW);
+            double dist = Math.sqrt(L.x*L.x + L.y*L.y + L.z*L.z);
+            Point4 dir = Point4.createVector(L.x/dist, L.y/dist, L.z/dist);
+
+            // finite ray segment from just above the surface towards the light
+            Point4 p0 = pSurfaceW.addVector(dir, EPS);                 // avoid self-hit
+            Point4 p1 = p0.addVector(dir, dist - 2*EPS);               // stop before light
+            Ray shadowRayW = new Ray(p0, p1);
+
+            // test against all other objects
+            double ff = 1.0;                                           // 1 = lit
+            for (ThreeDSurface s : surfaces) {
+                if (s == this) continue;                               // skip self
+                Ray srLocal = Ray.transform(shadowRayW, s.placement.tWL);
+                HitRecord h = new HitRecord();
+                if (s.surfaceGeometry.shoot(srLocal, h) && h.isHit && h.tHit > 0.0 && h.tHit < 1.0) {
+                    ff = 0.0;                                          // blocked → shadow
+                    break;
+                }
+            }
+
+            // shade with shadow factor
+            double fShade = material.calculate(vNormalW, vLightW, vViewW, ff);
+            Color c1 = surfaceColour.pickColour(hit.u, hit.v);
+            sr.colour = rescaleColour(c1, fShade);
+
+            sr.pSurface = placement.toWorld(hit.pSurface);
+        }
+
+        /*
+        if (hit.isHit) {
+            Point4 pSurfaceW = placement.toWorld(hit.pSurface);
             Point4 vNormalW  = placement.toWorld(hit.vNormal); //w=0 so translation ignored
             Point4 vLightW   = pLightW.minus(pSurfaceW); //L = light - point
             Point4 vViewW    = rayW.pOrigin.minus(pSurfaceW); //V = eye - point
@@ -97,7 +137,7 @@ public class ThreeDSurface {
 
             sr.pSurface = placement.toWorld(hit.pSurface);
             //System.out.println(fShade + " " + sr.isShaded + " " + sr.pSurface);
-        }
+        }*/
         return sr;
     }
 

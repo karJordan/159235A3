@@ -46,7 +46,7 @@ public class Material {
         double ks = Math.max(0.0, 1.0 - alpha - beta);
 
 // Ad-hoc brightness gain for the light-dependent terms.
-        double intensity = 1.5;
+        double intensity = 1.0;
 
 // Phong scale: ambient + (shadowed, brightened) * (diffuse + specular)
 // diffuse term = beta * NL              (NL = max(0, N·L))
