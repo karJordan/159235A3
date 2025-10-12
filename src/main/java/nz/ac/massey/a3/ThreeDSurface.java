@@ -31,6 +31,11 @@ public class ThreeDSurface {
 
     public ThreeDSurface() {}
 
+    public double uvScaleU = 1.0;
+    public double uvScaleV = 1.0;
+    public double uvRotate = 0.0; // in radians
+
+
     public ThreeDSurface(SurfaceGeometry sg, Material m, SurfaceColour sc, Placement p) {
         this.surfaceGeometry = sg;
         this.surfaceColour = sc;
@@ -107,10 +112,34 @@ public class ThreeDSurface {
                 }
             }
 
+            /*
             // shade with shadow factor
             double fShade = material.calculate(vNormalW, vLightW, vViewW, ff);
             Color c1 = surfaceColour.pickColour(hit.u, hit.v);
             sr.colour = rescaleColour(c1, fShade);
+            */
+
+            // Shade with shadow factor
+            double fShade = material.calculate(vNormalW, vLightW, vViewW, ff);
+
+// --- UV transform: apply rotation and scaling ---
+            double cosA = Math.cos(uvRotate);
+            double sinA = Math.sin(uvRotate);
+
+// center UVs around 0.5, rotate, and uncenter
+            double u = hit.u - 0.5;
+            double v = hit.v - 0.5;
+            double uRot = u * cosA - v * sinA;
+            double vRot = u * sinA + v * cosA;
+            uRot += 0.5;
+            vRot += 0.5;
+
+// sample the texture with rotation + scaling
+            Color c1 = surfaceColour.pickColour(uRot / uvScaleU, vRot / uvScaleV);
+
+// apply material shading
+            sr.colour = rescaleColour(c1, fShade);
+
 
             sr.pSurface = placement.toWorld(hit.pSurface);
         }
