@@ -35,25 +35,34 @@ public class Placement {
     Complete the implementation of this method to set up tLW, tWL
      */
     public static Placement placeModel(Point4 pD, Point4 pA, Point4 pS) {
-        // forward: L -> W
-        Matrix4 S  = Matrix4.createScale(pS.x, pS.y, pS.z);
-        Matrix4 Rx = Matrix4.createRotationX(pA.x);
-        Matrix4 Ry = Matrix4.createRotationY(pA.y);
-        Matrix4 Rz = Matrix4.createRotationZ(pA.z);
+        //D - position, A - rotations, S - size
+
+        // Local to world transforms
+        Matrix4 S  = Matrix4.createScale(pS.x, pS.y, pS.z); //scale
+        Matrix4 Rx = Matrix4.createRotationX(pA.x); //rotation about X
+        Matrix4 Ry = Matrix4.createRotationY(pA.y); //rotation about Y
+        Matrix4 Rz = Matrix4.createRotationZ(pA.z); //rotation about Z
         Matrix4 R  = Rz.times(Ry).times(Rx);
+        //Combine rotations Z Y X
         Matrix4 T  = Matrix4.createDisplacement(pD.x, pD.y, pD.z);
 
         Placement p = new Placement();
+
+        //local to world, scale, rotate,  translate
         p.tLW = T.times(R).times(S);
 
-        // inverse: W -> L  ( (T*R*S)^{-1} = S^{-1} * R^{-1} * T^{-1} )
+        // inverse world to local
         Matrix4 Si  = Matrix4.createScale(1.0 / pS.x, 1.0 / pS.y, 1.0 / pS.z);
         Matrix4 Rxi = Matrix4.createRotationX(-pA.x);
         Matrix4 Ryi = Matrix4.createRotationY(-pA.y);
         Matrix4 Rzi = Matrix4.createRotationZ(-pA.z);
-        Matrix4 Ri  = Rxi.times(Ryi).times(Rzi); // because R = Rz*Ry*Rx
-        Matrix4 Ti  = Matrix4.createDisplacement(-pD.x, -pD.y, -pD.z);
 
+        // combine inverses in opposite order to R
+        Matrix4 Ri  = Rxi.times(Ryi).times(Rzi);
+
+        // Inverse translation
+        Matrix4 Ti  = Matrix4.createDisplacement(-pD.x, -pD.y, -pD.z);
+        //world to local
         p.tWL = Si.times(Ri).times(Ti);
         return p;
     }

@@ -1,7 +1,5 @@
 package nz.ac.massey.a3;
 
-import java.util.jar.Manifest;
-
 /*
     This class handles the reflective properties of the surface.
 
@@ -10,7 +8,7 @@ import java.util.jar.Manifest;
 public class Material {
 
     // Parameters of the Phong reflection model as described in the lectures
-    //a = ambient, b=diffuse, n=shininess
+    //alpha = ambient, beta =diffuse, nShiny=shininess
     private double alpha, beta, nShiny;
 
     Material(double a, double b, double n) {
@@ -19,65 +17,43 @@ public class Material {
         nShiny = n; // >=1
     }
 
-    //clamp
-    private static double clamp01(double x) {
+    //ensure f is between 0 and 1
+    private static double limit01(double x) {
         return x < 0 ? 0 : (x > 1 ? 1 : x);
     }
 
-    // Phong scale factor in [0,1]
-    public double calculate(Point4 nW, Point4 lW, Point4 vW, double shadowFF) {
+
+    // Compute Phong lighting scale factor for a point
+    public double calculate(Point4 normWorld, Point4 worldLightDir, Point4 viewDir, double shadow) {
         //Normalize copies (treat as vectors)
-        Point4 N = Point4.createVector(nW.x, nW.y, nW.z);
+        Point4 N = Point4.createVector(normWorld.x, normWorld.y, normWorld.z);
         N.normalize();
-        Point4 L = Point4.createVector(lW.x, lW.y, lW.z);
+        Point4 L = Point4.createVector(worldLightDir.x, worldLightDir.y, worldLightDir.z);
         L.normalize();
-        Point4 V = Point4.createVector(vW.x, vW.y, vW.z);
+        Point4 V = Point4.createVector(viewDir.x, viewDir.y, viewDir.z);
         V.normalize();
 
+        // Diffuse is between 0 and the dot product of N and L
         double NL = Math.max(0.0, Point4.dot(N, L)); //diffuse
 
-        //reflection R = 2(N*L)N-L
+        //reflection vector R = 2(N*L)N-L
         Point4 R = Point4.createVector(2 * NL * N.x - L.x, 2 * NL * N.y - L.y, 2 * NL * N.z - L.z);
         R.normalize();
-        double RV = Math.max(0.0, Point4.dot(R, V)); //specular
 
+
+        double RV = Math.max(0.0, Point4.dot(R, V)); //specular
         double spec = Math.pow(RV, nShiny);
 
-        // ambient, diffuse, specular, then shadow
-        //double f = alpha + beta*NL + (1.0 -alpha -beta)*spec;
-        //return clamp01(f *shadowFF);
 
         // Specular weight = whatever remains after ambient (alpha) and diffuse (beta). Never negative.
         double ks = Math.max(0.0, 1.0 - alpha - beta);
 
-        // Ad-hoc brightness gain for the light-dependent terms.
-        //double intensity = 1.0;
-
-        /*
-        // boost specular reflection intensity
-        double intensity = 2.5;                      // brighter highlight
-        double specBoost = 3.0;                      // separate multiplier for specular term
-
-
-        // Phong scale: ambient + (shadowed, brightened) * (diffuse + specular)
-        // diffuse term = beta * NL              (NL = max(0, N·L))
-        // specular term = ks * spec             (spec = (R·V)^nShiny, computed earlier)
-        //double f = alpha + shadowFF * intensity * (beta * NL + ks * spec);
-
-        // Phong lighting model with boosted specular
-        double f = alpha                                 // ambient
-                + shadowFF * (beta * NL                 // diffuse
-                + ks * specBoost * spec);               // strong specular
-
-        // Limit to [0,1] before applying to the base color.
-        //return clamp01(f);
-
-        return clamp01(f * intensity);*/
-
-        double intensity = 1.2;      // modest brightening
+        double intensity = 1.2;      // light boost
         double specBoost = 2.0;      // visible but not overblown
-        double f = alpha + shadowFF * intensity * (beta * NL + ks * specBoost * spec);
-        return clamp01(f);
+
+        //phong lighting model f =
+        double f = alpha + shadow * intensity * (beta * NL + ks * specBoost * spec);
+        return limit01(f);
 
 
 

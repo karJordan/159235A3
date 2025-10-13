@@ -10,14 +10,14 @@ import java.util.ArrayList;
 public class Main {
     static double ambLight = .45;
 
-
-
+    //Helper method fr making boxes
     public static ArrayList<ThreeDSurface> makeBox(
             double x, double y, double z,
             Point4 center, Point4 angles,
             SurfaceColour sc, Material mat) {
 
         ArrayList<ThreeDSurface> faces = new ArrayList<>();
+        // used for offsets
         double hx = x * 0.5;
         double hy = y * 0.5;
         double hz = z * 0.5;
@@ -25,17 +25,17 @@ public class Main {
 
         Placement worldP = Placement.placeModel(center, angles, Point4.createPoint(1, 1, 1));
 
-        // Local offsets for each face
+        // face offsets local
         Point4[] p = {
-                Point4.createPoint( hx,  0,  0),  // right
-                Point4.createPoint(-hx,  0,  0),  // left
-                Point4.createPoint( 0,  hy,  0),  // front
-                Point4.createPoint( 0, -hy,  0),  // back
-                Point4.createPoint( 0,  0,  hz),  // top
-                Point4.createPoint( 0,  0, -hz)   // bottom
+                Point4.createPoint(hx, 0, 0),  // right
+                Point4.createPoint(-hx, 0, 0),  // left
+                Point4.createPoint(0, hy, 0),  // front
+                Point4.createPoint(0, -hy, 0),  // back
+                Point4.createPoint(0, 0, hz),  // top
+                Point4.createPoint(0, 0, -hz)   // bottom
         };
 
-        // Local rotations
+        // rotations local
         Point4[] a = {
                 Point4.createPoint(0, Math.toRadians(90), 0),    // right
                 Point4.createPoint(0, Math.toRadians(-90), 0),   // left
@@ -45,7 +45,7 @@ public class Main {
                 Point4.createPoint(Math.toRadians(180), 0, 0)    // bottom
         };
 
-        // Correct per-face scales (matching face size)
+        // face scaling
         Point4[] s = {
                 Point4.createPoint(z, y, 1),   // right
                 Point4.createPoint(z, y, 1),   // left
@@ -55,6 +55,7 @@ public class Main {
                 Point4.createPoint(x, y, 1)    // bottom
         };
 
+        //place and transform
         for (int i = 0; i < 6; i++) {
             Placement localP = Placement.placeModel(p[i], a[i], s[i]);
             Placement faceP = new Placement();
@@ -127,7 +128,6 @@ public class Main {
         // scene.add(testSurface(pD, pA, pS));
 
 
-
         //Beachball
         ThreeDSurface beachball = new ThreeDSurface(
                 new Sphere(10.0),
@@ -140,10 +140,9 @@ public class Main {
                         Point4.createPoint(1, 1, 1)      // scale
                 )
         );
-
         scene.add(beachball);
 
-        //Shiny blue ball`
+        //Shiny blue ball
         ThreeDSurface ball = new ThreeDSurface(
                 new Sphere(20.0),
                 new Material(.20, .3, 25),
@@ -174,7 +173,7 @@ public class Main {
 
         ThreeDSurface sky = new ThreeDSurface(
                 new Square(),                         // z=0 in local coords
-                new Material(ambLight+1, 0.5, 10),
+                new Material(ambLight + 1, 0.5, 10),
                 //new UniformColour(Color.GREEN),
                 new TextureColour(new TextureMap("clouds.jpg")),
                 Placement.placeModel(
@@ -187,7 +186,7 @@ public class Main {
 
         ThreeDSurface futuredoor = new ThreeDSurface(
                 new Square(),                         // z=0 in local coords
-                new Material(ambLight+.3, 0.5, 10),
+                new Material(ambLight + .3, 0.5, 10),
                 //new UniformColour(Color.GREEN),
                 new TextureColour(new TextureMap("scifi.jpg")),
                 Placement.placeModel(
@@ -200,7 +199,7 @@ public class Main {
 
         ThreeDSurface carpet = new ThreeDSurface(
                 new Square(),                         // z=0 in local coords
-                new Material(ambLight+.3, 0.5, 10),
+                new Material(ambLight + .3, 0.5, 10),
                 //new UniformColour(Color.GREEN),
                 new TextureColour(new TextureMap("carpet.jpg")),
                 Placement.placeModel(
@@ -217,10 +216,10 @@ public class Main {
         //box left
         ArrayList<ThreeDSurface> box = makeBox(50, 50, 100,
                 Point4.createPoint(0, 50, 50),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("bricks.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: box){
+        for (ThreeDSurface s : box) {
             s.uvScaleU = 2.5;
             s.uvScaleV = 1.15;
         }
@@ -229,10 +228,10 @@ public class Main {
         //box top
         ArrayList<ThreeDSurface> box2 = makeBox(50, 50, 50,
                 Point4.createPoint(50, 50, 75),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("bricks.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: box2){
+        for (ThreeDSurface s : box2) {
             s.uvScaleU = 2.5;
             s.uvScaleV = 2.15;
             //s.uvRotate = Math.toRadians(180);
@@ -241,13 +240,13 @@ public class Main {
 
         //box roof
         ArrayList<ThreeDSurface> roof = makeBox(155, 5, 50,
-                Point4.createPoint(50, 50-10, 115),
-                Point4.createPoint(Math.toRadians(-48),0,0),
+                Point4.createPoint(50, 50 - 10, 115),
+                Point4.createPoint(Math.toRadians(-48), 0, 0),
                 new TextureColour(new TextureMap("wood.jpg")),
                 //new UniformColour(Color.red),
                 //new TextureColour(new TextureMap("bricks.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: box2){
+        for (ThreeDSurface s : box2) {
             s.uvScaleU = 2.5;
             s.uvScaleV = 2.15;
             //s.uvRotate = Math.toRadians(180);
@@ -258,11 +257,11 @@ public class Main {
         //box right
         ArrayList<ThreeDSurface> box3 = makeBox(50, 50, 100,
                 Point4.createPoint(100, 50, 50),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("bricks.jpg")),
                 new Material(ambLight, 0.5, 20));
 
-        for (ThreeDSurface s: box3){
+        for (ThreeDSurface s : box3) {
             s.uvScaleU = 2.0;
             s.uvScaleV = 1.15;
         }
@@ -272,11 +271,11 @@ public class Main {
         //low wall left
         ArrayList<ThreeDSurface> leftwall = makeBox(10, 100, 40,
                 Point4.createPoint(-20, -25, 20),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("bricks.jpg")),
                 new Material(ambLight, 0.5, 20));
 
-        for (ThreeDSurface s: leftwall){
+        for (ThreeDSurface s : leftwall) {
             s.uvScaleU = 1;
             s.uvScaleV = 3;
             s.uvRotate = Math.toRadians(90);
@@ -285,7 +284,7 @@ public class Main {
 
         ThreeDSurface portrait = new ThreeDSurface(
                 new Square(),                         // z=0 in local coords
-                new Material(ambLight+.3, 0.5, 10),
+                new Material(ambLight + .3, 0.5, 10),
                 //new UniformColour(Color.GREEN),
                 new TextureColour(new TextureMap("dachshund.jpg")),
                 Placement.placeModel(
@@ -301,10 +300,10 @@ public class Main {
         //box frametop
         ArrayList<ThreeDSurface> frametop = makeBox(40, 3, 5,
                 Point4.createPoint(50, 25, 92),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("wood.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: frametop){
+        for (ThreeDSurface s : frametop) {
             s.uvScaleU = 1.0;
             s.uvScaleV = 1.0;
             //s.uvRotate = Math.toRadians(180);
@@ -314,10 +313,10 @@ public class Main {
         //box framebot
         ArrayList<ThreeDSurface> framebot = makeBox(40, 3, 5,
                 Point4.createPoint(50, 25, 58),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("wood.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: framebot){
+        for (ThreeDSurface s : framebot) {
             s.uvScaleU = 1.0;
             s.uvScaleV = 1.0;
             //s.uvRotate = Math.toRadians(180);
@@ -327,10 +326,10 @@ public class Main {
         //box frameleft
         ArrayList<ThreeDSurface> frameleft = makeBox(5, 3, 30,
                 Point4.createPoint(33, 25, 75),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("wood.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: frameleft){
+        for (ThreeDSurface s : frameleft) {
             s.uvScaleU = 1.0;
             s.uvScaleV = 2.0;
             s.uvRotate = Math.toRadians(90);
@@ -340,10 +339,10 @@ public class Main {
         //box frameright
         ArrayList<ThreeDSurface> frameright = makeBox(5, 3, 30,
                 Point4.createPoint(67, 25, 75),
-                Point4.createPoint(0,0,0),
+                Point4.createPoint(0, 0, 0),
                 new TextureColour(new TextureMap("wood.jpg")),
                 new Material(ambLight, 0.5, 20));
-        for (ThreeDSurface s: frameright){
+        for (ThreeDSurface s : frameright) {
             s.uvScaleU = 1.0;
             s.uvScaleV = 2.0;
             s.uvRotate = Math.toRadians(90);
@@ -351,20 +350,18 @@ public class Main {
         scene.add(frameright);
 
 
-
-
         //box randombox rotated on x
-        ArrayList<ThreeDSurface> boxrandom = makeBox(20,20,20,
+        ArrayList<ThreeDSurface> boxrandom = makeBox(20, 20, 20,
                 Point4.createPoint(90, -20, 10),
-                Point4.createPoint(0,0,Math.toRadians(25)),
+                Point4.createPoint(0, 0, Math.toRadians(25)),
                 new UniformColour(Color.GREEN),
                 new Material(ambLight, 0.5, 20));
         scene.add(boxrandom);
 
         //another rotated box
-        ArrayList<ThreeDSurface> redbox = makeBox(20,20,20,
+        ArrayList<ThreeDSurface> redbox = makeBox(20, 20, 20,
                 Point4.createPoint(90, -20, 30),
-                Point4.createPoint(0,0,Math.toRadians(50)),
+                Point4.createPoint(0, 0, Math.toRadians(50)),
                 new UniformColour(Color.red),
                 new Material(ambLight, 0.5, 20));
         scene.add(redbox);
